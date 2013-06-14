@@ -36,10 +36,15 @@ module Paperclip
       def flush_writes #:nodoc:
         @queued_for_write.each do |style_name, file|
           FileUtils.mkdir_p(File.dirname(path(style_name)))
-          File.open(path(style_name), "wb") do |new_file|
-            while chunk = file.read(16 * 1024)
-              new_file.write(chunk)
+          begin
+            FileUtils.mv(file.path, path(style_name))
+          rescue SystemCallError
+            File.open(path(style_name), "wb") do |new_file|
+              while chunk = file.read(16 * 1024)
+                new_file.write(chunk)
+              end
             end
+            # FileUtils.rm(file.path) <- Necessary?
           end
           unless @options[:override_file_permissions] == false
             resolved_chmod = (@options[:override_file_permissions] &~ 0111) || (0666 &~ File.umask)
