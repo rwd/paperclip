@@ -1,3 +1,7 @@
+New in 2.7.6:
+
+* Bug fix: Assist ImageMagick identify certain video files.
+
 New in 2.7.5:
 
 * Feature: :s3_host_name can be a proc
