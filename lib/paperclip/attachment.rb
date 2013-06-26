@@ -321,9 +321,9 @@ module Paperclip
     # thumbnails forcefully, by reobtaining the original file and going through
     # the post-process again.
     def reprocess!(*style_args)
-      new_original = Tempfile.new("paperclip-reprocess")
-      new_original.binmode
       if old_original = to_file(:original)
+        new_original = Tempfile.new(["paperclip-reprocess", File.extname(old_original)])
+        new_original.binmode
         new_original.write( old_original.respond_to?(:get) ? old_original.get : old_original.read )
         new_original.rewind
 
